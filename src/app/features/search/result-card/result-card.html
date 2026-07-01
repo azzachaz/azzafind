@@ -1,0 +1,27 @@
+<a class="card-link" [routerLink]="['/title', media().mediaType, media().id]">
+  <mat-card appearance="outlined">
+    <div class="poster">
+      @if (posterUrl(); as src) {
+        <img [src]="src" [alt]="media().title" loading="lazy" />
+      } @else {
+        <div class="poster-fallback">
+          <mat-icon>movie</mat-icon>
+        </div>
+      }
+    </div>
+    <mat-card-content>
+      <div class="title-row">
+        <span class="title">{{ media().title }}</span>
+        @if (media().year) {
+          <span class="year">{{ media().year }}</span>
+        }
+      </div>
+      <mat-chip-set>
+        <mat-chip disabled>{{ media().mediaType === 'movie' ? 'Movie' : 'TV' }}</mat-chip>
+        @if (media().voteAverage > 0) {
+          <mat-chip disabled>★ {{ media().voteAverage.toFixed(1) }}</mat-chip>
+        }
+      </mat-chip-set>
+    </mat-card-content>
+  </mat-card>
+</a>

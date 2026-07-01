@@ -1,0 +1,112 @@
+<a mat-button routerLink="/" class="back-link">
+  <mat-icon>arrow_back</mat-icon>
+  Back to search
+</a>
+
+@if (detailResource.isLoading()) {
+  <div class="state">
+    <mat-spinner diameter="40" />
+  </div>
+} @else if (detailResource.error()) {
+  <div class="state">
+    <p>Couldn't load this title. Check your API key and connection.</p>
+  </div>
+} @else if (detail(); as media) {
+  <div class="backdrop" [style.background-image]="backdropUrl() ? 'url(' + backdropUrl() + ')' : ''"></div>
+
+  <div class="content">
+    <div class="poster">
+      @if (posterUrl(); as src) {
+        <img [src]="src" [alt]="media.title" />
+      } @else {
+        <div class="poster-fallback">
+          <mat-icon>movie</mat-icon>
+        </div>
+      }
+    </div>
+
+    <div class="info">
+      <h1>{{ media.title }} @if (media.year) { <span class="year">({{ media.year }})</span> }</h1>
+
+      <mat-chip-set>
+        <mat-chip disabled>{{ media.mediaType === 'movie' ? 'Movie' : 'TV Show' }}</mat-chip>
+        @if (media.runtimeMinutes) {
+          <mat-chip disabled>{{ media.runtimeMinutes }} min</mat-chip>
+        }
+        @if (media.voteAverage > 0) {
+          <mat-chip disabled>★ {{ media.voteAverage.toFixed(1) }}</mat-chip>
+        }
+        @for (genre of media.genres; track genre) {
+          <mat-chip disabled>{{ genre }}</mat-chip>
+        }
+      </mat-chip-set>
+
+      <p class="overview">{{ media.overview || 'No overview available.' }}</p>
+
+      <section class="providers">
+        <h2>Where to watch <span class="region">(region: {{ tmdb.region }})</span></h2>
+
+        @if (!tmdb.apiKeyConfigured) {
+          <p class="muted">Add a TMDb API key to see streaming availability.</p>
+        } @else if (!media.providers || (!media.providers.flatrate.length && !media.providers.rent.length && !media.providers.buy.length)) {
+          <p class="muted">No streaming, rental, or purchase options found for this region.</p>
+        } @else {
+          @if (media.providers.flatrate.length) {
+            <div class="provider-group">
+              <h3>Stream</h3>
+              <div class="provider-list">
+                @for (provider of media.providers.flatrate; track provider.providerId) {
+                  <div class="provider" [title]="provider.name">
+                    @if (providerLogoUrl(provider.logoPath); as logo) {
+                      <img [src]="logo" [alt]="provider.name" />
+                    } @else {
+                      <span>{{ provider.name }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          @if (media.providers.rent.length) {
+            <div class="provider-group">
+              <h3>Rent</h3>
+              <div class="provider-list">
+                @for (provider of media.providers.rent; track provider.providerId) {
+                  <div class="provider" [title]="provider.name">
+                    @if (providerLogoUrl(provider.logoPath); as logo) {
+                      <img [src]="logo" [alt]="provider.name" />
+                    } @else {
+                      <span>{{ provider.name }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          @if (media.providers.buy.length) {
+            <div class="provider-group">
+              <h3>Buy</h3>
+              <div class="provider-list">
+                @for (provider of media.providers.buy; track provider.providerId) {
+                  <div class="provider" [title]="provider.name">
+                    @if (providerLogoUrl(provider.logoPath); as logo) {
+                      <img [src]="logo" [alt]="provider.name" />
+                    } @else {
+                      <span>{{ provider.name }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          @if (media.providers.link) {
+            <a [href]="media.providers.link" target="_blank" rel="noopener" class="justwatch-link">
+              View all options on JustWatch
+            </a>
+          }
+          <p class="attribution">Streaming availability data provided by JustWatch.</p>
+        }
+      </section>
+    </div>
+  </div>
+}

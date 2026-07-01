@@ -1,0 +1,47 @@
+@if (!tmdb.apiKeyConfigured) {
+  <div class="notice">
+    <mat-icon>key_off</mat-icon>
+    <p>
+      No TMDb API key configured. Get a free key at
+      <a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener">themoviedb.org</a>
+      and paste it into <code>src/environments/environment.ts</code>.
+    </p>
+  </div>
+}
+
+<mat-form-field appearance="outline" class="search-field">
+  <mat-label>Search movies &amp; shows</mat-label>
+  <input
+    matInput
+    #searchInput
+    type="text"
+    placeholder="e.g. The Bear, Dune, Breaking Bad"
+    [value]="query()"
+    (input)="onQueryInput(searchInput.value)"
+  />
+  <mat-icon matSuffix>search</mat-icon>
+</mat-form-field>
+
+@if (searchResource.isLoading()) {
+  <div class="state">
+    <mat-spinner diameter="40" />
+  </div>
+} @else if (searchResource.error()) {
+  <div class="state">
+    <p>Something went wrong searching TMDb. Check your API key and connection.</p>
+  </div>
+} @else if (query().trim().length > 0 && query().trim().length < 2) {
+  <div class="state">
+    <p>Keep typing — at least 2 characters.</p>
+  </div>
+} @else if (results().length === 0 && query().trim().length >= 2) {
+  <div class="state">
+    <p>No matches for "{{ query() }}".</p>
+  </div>
+}
+
+<div class="results-grid">
+  @for (result of results(); track result.mediaType + result.id) {
+    <app-result-card [media]="result" />
+  }
+</div>

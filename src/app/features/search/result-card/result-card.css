@@ -1,0 +1,82 @@
+.card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.poster {
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+}
+
+.poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.poster-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.4;
+}
+
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.title {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.year {
+  flex-shrink: 0;
+  opacity: 0.6;
+  font-size: 0.85rem;
+}
+
+mat-chip-set {
+  margin-top: 0.5rem;
+}
+
+:host ::ng-deep mat-card-content {
+  padding: 0.5rem 0.6rem 0.6rem;
+}
+
+@media (max-width: 600px) {
+  .title-row {
+    margin-top: 0.35rem;
+    gap: 0.25rem;
+  }
+
+  .title {
+    font-size: 0.8rem;
+  }
+
+  .year {
+    font-size: 0.7rem;
+  }
+
+  mat-chip-set {
+    margin-top: 0.3rem;
+    --mdc-chip-container-height: 22px;
+    --mat-chip-label-text-size: 0.65rem;
+    font-size: 0.65rem;
+  }
+
+  :host ::ng-deep mat-card-content {
+    padding: 0.35rem 0.4rem 0.4rem;
+  }
+}
